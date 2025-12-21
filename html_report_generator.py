@@ -1,0 +1,1074 @@
+"""HTML Report Generator for Cloud Cost Optimizer"""
+
+from datetime import datetime
+from typing import Dict, List
+
+
+class HTMLReportGenerator:
+    """Generate beautiful HTML reports with CSS styling"""
+
+    @staticmethod
+    def generate_html_report(profile: Dict, billing: List[Dict], report: Dict, output_path: str):
+        """Generate a comprehensive HTML report with all data"""
+
+        html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Cost Optimization Report - {report['project_name']}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {{
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --danger-gradient: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151932;
+            --bg-card: #1e2139;
+            --bg-card-hover: #252945;
+
+            --text-primary: #ffffff;
+            --text-secondary: #a0a3bd;
+            --text-muted: #6b6d85;
+
+            --accent-purple: #667eea;
+            --accent-cyan: #4facfe;
+            --accent-green: #38ef7d;
+            --accent-red: #ff6a00;
+            --accent-yellow: #ffd93d;
+
+            --border-color: #2d2f48;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }}
+
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+
+        body {{
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }}
+
+        /* Animated Background */
+        body::before {{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse 10s ease-in-out infinite;
+        }}
+
+        @keyframes pulse {{
+            0%, 100% {{ opacity: 1; }}
+            50% {{ opacity: 0.5; }}
+        }}
+
+        .container {{
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }}
+
+        /* Header */
+        .report-header {{
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }}
+
+        .report-header::before {{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--primary-gradient);
+            opacity: 0.05;
+            animation: rotate 30s linear infinite;
+        }}
+
+        @keyframes rotate {{
+            from {{ transform: rotate(0deg); }}
+            to {{ transform: rotate(360deg); }}
+        }}
+
+        .report-header h1 {{
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }}
+
+        .report-header .subtitle {{
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }}
+
+        .project-name {{
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            color: var(--accent-cyan);
+        }}
+
+        .report-meta {{
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }}
+
+        .meta-item {{
+            text-align: center;
+        }}
+
+        .meta-label {{
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }}
+
+        .meta-value {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }}
+
+        /* Section Styles */
+        .section {{
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }}
+
+        .section:hover {{
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }}
+
+        .section-header {{
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }}
+
+        .section-icon {{
+            font-size: 2rem;
+        }}
+
+        .section-title {{
+            font-size: 1.75rem;
+            font-weight: 700;
+        }}
+
+        /* Stats Grid */
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }}
+
+        .stat-card {{
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .stat-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }}
+
+        .stat-card:hover {{
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+        }}
+
+        .stat-card:hover::before {{
+            transform: scaleX(1);
+        }}
+
+        .stat-label {{
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }}
+
+        .stat-value {{
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+
+        .stat-change {{
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }}
+
+        .stat-change.positive {{
+            color: var(--accent-green);
+        }}
+
+        .stat-change.negative {{
+            color: var(--accent-red);
+        }}
+
+        /* Budget Status */
+        .budget-status {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }}
+
+        .budget-info {{
+            flex: 1;
+        }}
+
+        .budget-label {{
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }}
+
+        .budget-amount {{
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }}
+
+        .budget-bar {{
+            flex: 2;
+            margin: 0 2rem;
+        }}
+
+        .budget-bar-bg {{
+            height: 24px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }}
+
+        .budget-bar-fill {{
+            height: 100%;
+            background: var(--success-gradient);
+            border-radius: 12px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .budget-bar-fill.over-budget {{
+            background: var(--danger-gradient);
+        }}
+
+        .budget-bar-fill::after {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }}
+
+        @keyframes shimmer {{
+            0% {{ transform: translateX(-100%); }}
+            100% {{ transform: translateX(100%); }}
+        }}
+
+        .budget-percentage {{
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }}
+
+        /* Service Costs Chart */
+        .service-chart {{
+            margin-top: 2rem;
+        }}
+
+        .service-item {{
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }}
+
+        .service-item:hover {{
+            background: var(--bg-card-hover);
+            transform: translateX(8px);
+        }}
+
+        .service-name {{
+            min-width: 200px;
+            font-weight: 600;
+            font-size: 1rem;
+        }}
+
+        .service-bar-container {{
+            flex: 1;
+            margin: 0 1.5rem;
+        }}
+
+        .service-bar {{
+            height: 12px;
+            background: var(--primary-gradient);
+            border-radius: 6px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .service-bar::after {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }}
+
+        .service-cost {{
+            min-width: 120px;
+            text-align: right;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.125rem;
+        }}
+
+        .service-percentage {{
+            min-width: 60px;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }}
+
+        /* Billing Table */
+        .billing-table {{
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }}
+
+        .billing-table thead {{
+            background: var(--bg-card);
+        }}
+
+        .billing-table th {{
+            padding: 1.25rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-color);
+        }}
+
+        .billing-table tbody tr {{
+            transition: all 0.2s ease;
+        }}
+
+        .billing-table tbody tr:hover {{
+            background: var(--bg-card-hover);
+        }}
+
+        .billing-table td {{
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }}
+
+        .billing-table .service-cell {{
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }}
+
+        .billing-table .cost-cell {{
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }}
+
+        .billing-table .provider-cell {{
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }}
+
+        /* Recommendations */
+        .recommendations-grid {{
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }}
+
+        .recommendation-card {{
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .recommendation-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }}
+
+        .recommendation-card:hover {{
+            background: var(--bg-card-hover);
+            transform: translateX(8px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }}
+
+        .rec-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }}
+
+        .rec-title {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }}
+
+        .rec-type {{
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }}
+
+        .rec-service {{
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }}
+
+        .rec-description {{
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }}
+
+        .rec-metrics {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }}
+
+        .rec-metric {{
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }}
+
+        .rec-metric-label {{
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }}
+
+        .rec-metric-value {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }}
+
+        .rec-metric-value.savings {{
+            color: var(--accent-green);
+        }}
+
+        .rec-tags {{
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }}
+
+        .rec-tag {{
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+
+        .rec-tag.effort-low {{
+            background: rgba(56, 239, 125, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }}
+
+        .rec-tag.effort-medium {{
+            background: rgba(255, 217, 61, 0.2);
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+        }}
+
+        .rec-tag.effort-high {{
+            background: rgba(255, 106, 0, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }}
+
+        .rec-tag.risk-low {{
+            background: rgba(56, 239, 125, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }}
+
+        .rec-tag.risk-medium {{
+            background: rgba(255, 217, 61, 0.2);
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+        }}
+
+        .rec-tag.risk-high {{
+            background: rgba(255, 106, 0, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }}
+
+        .rec-providers {{
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }}
+
+        .provider-badge {{
+            padding: 0.5rem 1rem;
+            background: var(--info-gradient);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }}
+
+        .rec-steps {{
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }}
+
+        .rec-steps-title {{
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }}
+
+        .rec-steps ol {{
+            padding-left: 1.5rem;
+            margin: 0;
+        }}
+
+        .rec-steps li {{
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }}
+
+        .rec-steps li:last-child {{
+            margin-bottom: 0;
+        }}
+
+        /* Summary Cards */
+        .summary-cards {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }}
+
+        .summary-card {{
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .summary-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0.05;
+        }}
+
+        .summary-card-icon {{
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }}
+
+        .summary-card-value {{
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }}
+
+        .summary-card-label {{
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }}
+
+        /* Footer */
+        .report-footer {{
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 2px solid var(--border-color);
+        }}
+
+        .report-footer p {{
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }}
+
+        /* Responsive */
+        @media (max-width: 768px) {{
+            .container {{
+                padding: 2rem 1rem;
+            }}
+
+            .report-header h1 {{
+                font-size: 2rem;
+            }}
+
+            .stats-grid {{
+                grid-template-columns: 1fr;
+            }}
+
+            .budget-status {{
+                flex-direction: column;
+                gap: 2rem;
+            }}
+
+            .budget-bar {{
+                width: 100%;
+                margin: 0;
+            }}
+
+            .service-item {{
+                flex-direction: column;
+                align-items: flex-start;
+            }}
+
+            .service-name {{
+                min-width: auto;
+                margin-bottom: 0.5rem;
+            }}
+
+            .service-bar-container {{
+                width: 100%;
+                margin: 0.5rem 0;
+            }}
+        }}
+
+        /* Print Styles */
+        @media print {{
+            body {{
+                background: white;
+                color: black;
+            }}
+
+            .section {{
+                page-break-inside: avoid;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="report-header">
+            <h1>☁️ Cloud Cost Optimization Report</h1>
+            <p class="subtitle">AI-Powered Multi-Cloud Analysis</p>
+            <div class="project-name">{report['project_name']}</div>
+
+            <div class="report-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Generated On</div>
+                    <div class="meta-value">{datetime.now().strftime('%B %d, %Y')}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Analysis Period</div>
+                    <div class="meta-value">Monthly</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2 class="section-title">Executive Summary</h2>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Monthly Budget</div>
+                    <div class="stat-value">₹{report['analysis']['budget']:,.2f}</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Actual Cost</div>
+                    <div class="stat-value">₹{report['analysis']['total_monthly_cost']:,.2f}</div>
+                    <div class="stat-change {'negative' if report['analysis']['is_over_budget'] else 'positive'}">
+                        {'+' if report['analysis']['is_over_budget'] else ''}₹{report['analysis']['budget_variance']:,.2f} vs Budget
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Potential Savings</div>
+                    <div class="stat-value">₹{report['summary']['total_potential_savings']:,.2f}</div>
+                    <div class="stat-change positive">
+                        {report['summary']['savings_percentage']:.1f}% Reduction Possible
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Recommendations</div>
+                    <div class="stat-value">{report['summary']['recommendations_count']}</div>
+                    <div class="stat-change positive">
+                        Actionable Optimizations
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Status Bar -->
+            <div class="budget-status">
+                <div class="budget-info">
+                    <div class="budget-label">Budget Utilization</div>
+                    <div class="budget-amount {'negative' if report['analysis']['is_over_budget'] else 'positive'}">
+                        {(report['analysis']['total_monthly_cost'] / report['analysis']['budget'] * 100):.1f}%
+                    </div>
+                </div>
+
+                <div class="budget-bar">
+                    <div class="budget-bar-bg">
+                        <div class="budget-bar-fill {'over-budget' if report['analysis']['is_over_budget'] else ''}"
+                             style="width: {min((report['analysis']['total_monthly_cost'] / report['analysis']['budget'] * 100), 100)}%">
+                        </div>
+                    </div>
+                    <div class="budget-percentage">
+                        ₹{report['analysis']['total_monthly_cost']:,.2f} of ₹{report['analysis']['budget']:,.2f} budget used
+                    </div>
+                </div>
+
+                <div class="budget-info">
+                    <div class="budget-label">{'Over' if report['analysis']['is_over_budget'] else 'Under'} Budget</div>
+                    <div class="budget-amount {'negative' if report['analysis']['is_over_budget'] else 'positive'}">
+                        ₹{abs(report['analysis']['budget_variance']):,.2f}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Breakdown by Service -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📈</span>
+                <h2 class="section-title">Cost Breakdown by Service</h2>
+            </div>
+
+            <div class="service-chart">
+                {HTMLReportGenerator._generate_service_chart(report['analysis'])}
+            </div>
+        </div>
+
+        <!-- Detailed Billing Records -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💳</span>
+                <h2 class="section-title">Detailed Billing Records</h2>
+            </div>
+
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Showing {len(billing)} billing records for the analysis period
+            </p>
+
+            <table class="billing-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Description</th>
+                        <th>Provider</th>
+                        <th>Region</th>
+                        <th>Usage</th>
+                        <th>Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {HTMLReportGenerator._generate_billing_rows(billing)}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Optimization Recommendations -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💡</span>
+                <h2 class="section-title">Optimization Recommendations</h2>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-card-icon">💰</div>
+                    <div class="summary-card-value">₹{report['summary']['total_potential_savings']:,.2f}</div>
+                    <div class="summary-card-label">Total Savings Potential</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-card-icon">📉</div>
+                    <div class="summary-card-value">{report['summary']['savings_percentage']:.1f}%</div>
+                    <div class="summary-card-label">Cost Reduction</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-card-icon">🎯</div>
+                    <div class="summary-card-value">{report['summary']['recommendations_count']}</div>
+                    <div class="summary-card-label">Recommendations</div>
+                </div>
+            </div>
+
+            <div class="recommendations-grid">
+                {HTMLReportGenerator._generate_recommendations(report['recommendations'])}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="report-footer">
+            <p>Generated by AI-Powered Cloud Cost Optimizer</p>
+            <p>Report Date: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</p>
+        </div>
+    </div>
+</body>
+</html>"""
+
+        # Write to file
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
+    @staticmethod
+    def _generate_service_chart(analysis: Dict) -> str:
+        """Generate HTML for service cost chart"""
+        services = sorted(analysis['service_costs'].items(), key=lambda x: x[1], reverse=True)
+        total_cost = analysis['total_monthly_cost']
+        max_cost = max([cost for _, cost in services]) if services else 1
+
+        html = ""
+        for service, cost in services:
+            percentage = (cost / total_cost * 100) if total_cost > 0 else 0
+            bar_width = (cost / max_cost * 100) if max_cost > 0 else 0
+
+            html += f"""
+                <div class="service-item">
+                    <div class="service-name">{service}</div>
+                    <div class="service-bar-container">
+                        <div class="service-bar" style="width: {bar_width}%"></div>
+                    </div>
+                    <div class="service-cost">₹{cost:,.2f}</div>
+                    <div class="service-percentage">{percentage:.1f}%</div>
+                </div>
+            """
+
+        return html
+
+    @staticmethod
+    def _generate_billing_rows(billing: List[Dict]) -> str:
+        """Generate HTML table rows for billing records"""
+        html = ""
+        for record in billing:
+            service_name = record.get('service_name') or record.get('service', 'N/A')
+            description = record.get('description') or record.get('desc', 'N/A')
+            provider = record.get('cloud_provider', 'N/A')
+            region = record.get('region', 'N/A')
+            usage_qty = record.get('usage_quantity') or record.get('usage_quantity', 0)
+            usage_unit = record.get('usage_unit') or record.get('unit', '')
+            cost_inr = record.get('cost_inr', 0)
+
+            html += f"""
+                <tr>
+                    <td class="service-cell">{service_name}</td>
+                    <td>{description}</td>
+                    <td class="provider-cell">{provider}</td>
+                    <td>{region}</td>
+                    <td>{usage_qty:.2f} {usage_unit}</td>
+                    <td class="cost-cell">₹{cost_inr:,.2f}</td>
+                </tr>
+            """
+        return html
+
+    @staticmethod
+    def _generate_recommendations(recommendations: List[Dict]) -> str:
+        """Generate HTML for recommendation cards"""
+        html = ""
+        for i, rec in enumerate(recommendations, 1):
+            current_cost = rec.get('current_cost', 0)
+            potential_savings = rec.get('potential_savings', 0)
+            savings_pct = (potential_savings / current_cost * 100) if current_cost > 0 else 0
+
+            providers_html = ''.join([
+                f'<span class="provider-badge">{provider}</span>'
+                for provider in rec.get('cloud_providers', [])
+            ])
+
+            steps_html = ''.join([
+                f'<li>{step}</li>'
+                for step in rec.get('steps', [])
+            ])
+
+            html += f"""
+                <div class="recommendation-card">
+                    <div class="rec-header">
+                        <div>
+                            <h3 class="rec-title">{i}. {rec.get('title', 'Untitled Recommendation')}</h3>
+                            <div class="rec-service">Service: {rec.get('service', 'N/A')}</div>
+                        </div>
+                        <span class="rec-type">{rec.get('recommendation_type', 'N/A')}</span>
+                    </div>
+
+                    <p class="rec-description">{rec.get('description', '')}</p>
+
+                    <div class="rec-metrics">
+                        <div class="rec-metric">
+                            <div class="rec-metric-label">Current Cost</div>
+                            <div class="rec-metric-value">₹{current_cost:,.2f}</div>
+                        </div>
+
+                        <div class="rec-metric">
+                            <div class="rec-metric-label">Potential Savings</div>
+                            <div class="rec-metric-value savings">₹{potential_savings:,.2f}</div>
+                        </div>
+
+                        <div class="rec-metric">
+                            <div class="rec-metric-label">Savings Percentage</div>
+                            <div class="rec-metric-value savings">{savings_pct:.1f}%</div>
+                        </div>
+                    </div>
+
+                    <div class="rec-tags">
+                        <span class="rec-tag effort-{rec.get('implementation_effort', 'unknown')}">
+                            {rec.get('implementation_effort', 'UNKNOWN').upper()} EFFORT
+                        </span>
+                        <span class="rec-tag risk-{rec.get('risk_level', 'unknown')}">
+                            {rec.get('risk_level', 'UNKNOWN').upper()} RISK
+                        </span>
+                    </div>
+
+                    <div class="rec-providers">
+                        {providers_html}
+                    </div>
+
+                    <div class="rec-steps">
+                        <div class="rec-steps-title">📋 Implementation Steps:</div>
+                        <ol>
+                            {steps_html}
+                        </ol>
+                    </div>
+                </div>
+            """
+
+        return html

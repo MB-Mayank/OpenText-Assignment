@@ -1,0 +1,8 @@
+I want to build a healthcare analytics platform for hospitals.
+The system will analyze patient admission trends and resource utilization.
+The backend will be developed using Python and FastAPI.
+PostgreSQL will be used as the database.
+Dashboards will be built using React.
+The application will be hosted on AWS.
+My monthly cloud budget is 5000 INR.
+The system should be secure, scalable, and highly available.

@@ -1,0 +1,181 @@
+{
+  "project_name": "Healthcare Analytics Platform",
+  "analysis": {
+    "total_monthly_cost": 4574.0,
+    "budget": 5000.0,
+    "budget_variance": -426.0,
+    "service_costs": {
+      "EC2": 2304.0,
+      "RDS": 1920.0,
+      "S3": 18.0,
+      "CloudWatch": 17.0,
+      "VPC": 0.0,
+      "Data Transfer": 54.0,
+      "EBS": 216.0,
+      "Load Balancer": 45.0
+    },
+    "high_cost_services": {
+      "EC2": 2304.0,
+      "RDS": 1920.0,
+      "EBS": 216.0
+    },
+    "is_over_budget": false
+  },
+  "recommendations": [
+    {
+      "title": "Right-size EC2 instances",
+      "service": "EC2",
+      "current_cost": 2304.0,
+      "potential_savings": 576.0,
+      "recommendation_type": "right_sizing",
+      "description": "Downgrade underutilized instances to smaller sizes",
+      "implementation_effort": "medium",
+      "risk_level": "low",
+      "steps": [
+        "Monitor instance utilization",
+        "Identify underutilized instances",
+        "Downgrade to smaller sizes"
+      ],
+      "cloud_providers": [
+        "AWS",
+        "Azure",
+        "GCP"
+      ]
+    },
+    {
+      "title": "Migrate RDS to PostgreSQL on Azure",
+      "service": "RDS",
+      "current_cost": 1920.0,
+      "potential_savings": 384.0,
+      "recommendation_type": "alternative_provider",
+      "description": "Migrate to Azure PostgreSQL for cost savings",
+      "implementation_effort": "high",
+      "risk_level": "medium",
+      "steps": [
+        "Assess database compatibility",
+        "Migrate database to Azure",
+        "Update application connections"
+      ],
+      "cloud_providers": [
+        "Azure"
+      ]
+    },
+    {
+      "title": "Use reserved instances for EC2",
+      "service": "EC2",
+      "current_cost": 2304.0,
+      "potential_savings": 460.8,
+      "recommendation_type": "reserved_instances",
+      "description": "Purchase reserved instances for predictable workloads",
+      "implementation_effort": "low",
+      "risk_level": "low",
+      "steps": [
+        "Assess workload predictability",
+        "Purchase reserved instances",
+        "Update instance configurations"
+      ],
+      "cloud_providers": [
+        "AWS",
+        "Azure",
+        "GCP"
+      ]
+    },
+    {
+      "title": "Optimize EBS storage",
+      "service": "EBS",
+      "current_cost": 216.0,
+      "potential_savings": 54.0,
+      "recommendation_type": "optimization",
+      "description": "Delete unused EBS volumes and snapshots",
+      "implementation_effort": "low",
+      "risk_level": "low",
+      "steps": [
+        "Identify unused EBS volumes",
+        "Delete unused volumes and snapshots"
+      ],
+      "cloud_providers": [
+        "AWS",
+        "Azure",
+        "GCP"
+      ]
+    },
+    {
+      "title": "Use free tier for CloudWatch",
+      "service": "CloudWatch",
+      "current_cost": 17.0,
+      "potential_savings": 17.0,
+      "recommendation_type": "free_tier",
+      "description": "Utilize free tier limits for CloudWatch",
+      "implementation_effort": "low",
+      "risk_level": "low",
+      "steps": [
+        "Review CloudWatch usage",
+        "Optimize usage to fit within free tier"
+      ],
+      "cloud_providers": [
+        "AWS"
+      ]
+    },
+    {
+      "title": "Migrate to open-source alternative for Load Balancer",
+      "service": "Load Balancer",
+      "current_cost": 45.0,
+      "potential_savings": 45.0,
+      "recommendation_type": "open_source",
+      "description": "Use an open-source load balancer like HAProxy",
+      "implementation_effort": "medium",
+      "risk_level": "medium",
+      "steps": [
+        "Assess load balancer requirements",
+        "Configure HAProxy",
+        "Update application connections"
+      ],
+      "cloud_providers": [
+        "Open Source"
+      ]
+    },
+    {
+      "title": "Use Azure Data Lake Storage for S3",
+      "service": "S3",
+      "current_cost": 18.0,
+      "potential_savings": 9.0,
+      "recommendation_type": "alternative_provider",
+      "description": "Migrate to Azure Data Lake Storage for cost savings",
+      "implementation_effort": "medium",
+      "risk_level": "medium",
+      "steps": [
+        "Assess data compatibility",
+        "Migrate data to Azure",
+        "Update application connections"
+      ],
+      "cloud_providers": [
+        "Azure"
+      ]
+    },
+    {
+      "title": "Implement Data Transfer optimization",
+      "service": "Data Transfer",
+      "current_cost": 54.0,
+      "potential_savings": 27.0,
+      "recommendation_type": "optimization",
+      "description": "Optimize data transfer between regions and services",
+      "implementation_effort": "medium",
+      "risk_level": "low",
+      "steps": [
+        "Review data transfer patterns",
+        "Optimize data transfer routes"
+      ],
+      "cloud_providers": [
+        "AWS",
+        "Azure",
+        "GCP"
+      ]
+    }
+  ],
+  "summary": {
+    "total_potential_savings": 2073.8,
+    "savings_percentage": 45.3,
+    "recommendations_count": 8,
+    "high_impact_recommendations": 4
+  }
+}

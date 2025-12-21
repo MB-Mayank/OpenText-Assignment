@@ -1,0 +1,156 @@
+[
+  {
+    "month": "2025-01",
+    "service": "EC2",
+    "resource_id": "i-0f54f7d5e6c7b8a9d",
+    "region": "ap-south-1",
+    "usage_type": "On-Demand",
+    "usage_quantity": 720,
+    "unit": "hours",
+    "cost_inr": 864.0,
+    "desc": "t2.micro instance for backend"
+  },
+  {
+    "month": "2025-01",
+    "service": "EC2",
+    "resource_id": "i-0f54f7d5e6c7b8a9e",
+    "region": "ap-south-1",
+    "usage_type": "On-Demand",
+    "usage_quantity": 720,
+    "unit": "hours",
+    "cost_inr": 864.0,
+    "desc": "t2.micro instance for backend"
+  },
+  {
+    "month": "2025-01",
+    "service": "RDS",
+    "resource_id": "rds:ap-south-1:123456789012:db:postgresql-12345678",
+    "region": "ap-south-1",
+    "usage_type": "On-Demand",
+    "usage_quantity": 720,
+    "unit": "hours",
+    "cost_inr": 1152.0,
+    "desc": "PostgreSQL database instance"
+  },
+  {
+    "month": "2025-01",
+    "service": "S3",
+    "resource_id": "healthcare-analytics-platform-bucket",
+    "region": "ap-south-1",
+    "usage_type": "Standard Storage",
+    "usage_quantity": 10,
+    "unit": "GB",
+    "cost_inr": 18.0,
+    "desc": "Storage for frontend assets"
+  },
+  {
+    "month": "2025-01",
+    "service": "CloudWatch",
+    "resource_id": "healthcare-analytics-platform-logs",
+    "region": "ap-south-1",
+    "usage_type": "Log Data",
+    "usage_quantity": 1,
+    "unit": "GB",
+    "cost_inr": 12.0,
+    "desc": "Logging for backend instances"
+  },
+  {
+    "month": "2025-01",
+    "service": "CloudWatch",
+    "resource_id": "healthcare-analytics-platform-metrics",
+    "region": "ap-south-1",
+    "usage_type": "Custom Metrics",
+    "usage_quantity": 1000,
+    "unit": "metrics",
+    "cost_inr": 5.0,
+    "desc": "Monitoring for backend instances"
+  },
+  {
+    "month": "2025-01",
+    "service": "VPC",
+    "resource_id": "vpc-12345678",
+    "region": "ap-south-1",
+    "usage_type": "VPC",
+    "usage_quantity": 1,
+    "unit": "VPC",
+    "cost_inr": 0.0,
+    "desc": "Virtual Private Cloud"
+  },
+  {
+    "month": "2025-01",
+    "service": "Data Transfer",
+    "resource_id": "data-transfer-12345678",
+    "region": "ap-south-1",
+    "usage_type": "Data Transfer Out",
+    "usage_quantity": 10,
+    "unit": "GB",
+    "cost_inr": 54.0,
+    "desc": "Data transfer out of AWS"
+  },
+  {
+    "month": "2025-01",
+    "service": "EBS",
+    "resource_id": "vol-12345678",
+    "region": "ap-south-1",
+    "usage_type": "General Purpose SSD",
+    "usage_quantity": 30,
+    "unit": "GB",
+    "cost_inr": 108.0,
+    "desc": "Storage for backend instances"
+  },
+  {
+    "month": "2025-01",
+    "service": "EBS",
+    "resource_id": "vol-12345679",
+    "region": "ap-south-1",
+    "usage_type": "General Purpose SSD",
+    "usage_quantity": 30,
+    "unit": "GB",
+    "cost_inr": 108.0,
+    "desc": "Storage for backend instances"
+  },
+  {
+    "month": "2025-01",
+    "service": "EC2",
+    "resource_id": "i-0f54f7d5e6c7b8a9f",
+    "region": "ap-south-1",
+    "usage_type": "Reserved Instance",
+    "usage_quantity": 720,
+    "unit": "hours",
+    "cost_inr": 576.0,
+    "desc": "t2.micro instance for backend"
+  },
+  {
+    "month": "2025-01",
+    "service": "RDS",
+    "resource_id": "rds:ap-south-1:123456789012:db:postgresql-12345679",
+    "region": "ap-south-1",
+    "usage_type": "Reserved Instance",
+    "usage_quantity": 720,
+    "unit": "hours",
+    "cost_inr": 768.0,
+    "desc": "PostgreSQL database instance"
+  },
+  {
+    "month": "2025-01",
+    "service": "Load Balancer",
+    "resource_id": "load-balancer-12345678",
+    "region": "ap-south-1",
+    "usage_type": "Load Balancer",
+    "usage_quantity": 1,
+    "unit": "Load Balancer",
+    "cost_inr": 25.0,
+    "desc": "Load balancer for backend instances"
+  },
+  {
+    "month": "2025-01",
+    "service": "Load Balancer",
+    "resource_id": "load-balancer-12345678",
+    "region": "ap-south-1",
+    "usage_type": "Load Balancer Capacity Units",
+    "usage_quantity": 100,
+    "unit": "LCU",
+    "cost_inr": 20.0,
+    "desc": "Load balancer capacity units"
+  }
+]

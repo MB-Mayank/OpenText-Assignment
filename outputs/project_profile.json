@@ -1,0 +1,21 @@
+{
+  "name": "Healthcare Analytics Platform",
+  "budget_inr_per_month": 5000,
+  "description": "A healthcare analytics platform to analyze patient admission trends and resource utilization for hospitals.",
+  "tech_stack": {
+    "frontend": "React",
+    "backend": "Python and FastAPI",
+    "database": "PostgreSQL",
+    "proxy": null,
+    "hosting": "AWS",
+    "storage": null,
+    "monitoring": null,
+    "analytics": null,
+    "other": []
+  },
+  "non_functional_requirements": [
+    "security",
+    "scalability",
+    "high availability"
+  ]
+}
