@@ -842,14 +842,14 @@ class HTMLReportGenerator:
                 <div class="budget-info">
                     <div class="budget-label">Budget Utilization</div>
                     <div class="budget-amount {'negative' if report['analysis']['is_over_budget'] else 'positive'}">
-                        {(report['analysis']['total_monthly_cost'] / report['analysis']['budget'] * 100):.1f}%
+                        {(report['analysis']['total_monthly_cost'] / report['analysis']['budget'] if report['analysis']['budget'] else 0):.1f}x
                     </div>
                 </div>
 
                 <div class="budget-bar">
                     <div class="budget-bar-bg">
                         <div class="budget-bar-fill {'over-budget' if report['analysis']['is_over_budget'] else ''}"
-                             style="width: {min((report['analysis']['total_monthly_cost'] / report['analysis']['budget'] * 100), 100)}%">
+                             style="width: {min(((report['analysis']['total_monthly_cost'] / report['analysis']['budget'] * 100) if report['analysis']['budget'] else 0), 100)}%">
                         </div>
                     </div>
                     <div class="budget-percentage">

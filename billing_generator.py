@@ -30,18 +30,19 @@ class BillingGenerator:
         Returns:
             List of billing records
         """
-        system_prompt = """You are a cloud cost analyst. Generate realistic synthetic billing data for cloud projects.
-
+        system_prompt = """You are a cloud cost analyst. Generate realistic synthetic billing data for cloud projects . Budget given is just for comparison if budget is very low generate realistic over budget billing. You dont always need to be close to budget be realistic.
 CRITICAL: Return ONLY valid JSON array, no markdown formatting, no explanations, no code blocks.
-
-Generate 12-20 billing records covering:
+CRITICAL UNIQUENESS RULES (MUST FOLLOW):
+1. Each billing record MUST be unique .
+2. NO two records may share the same descroption or service.
+3. Before returning the final output, internally verify that NO duplicates exist.
+Generate 12-20 billing records covering(DOnot repeat all uniques should be there ):
 - Compute (EC2, VMs, App Services)
 - Database (RDS, MongoDB, PostgreSQL)
 - Storage (S3, Blob Storage, Cloud Storage)
 - Networking (Load Balancers, CDN, Data Transfer)
 - Monitoring (CloudWatch, Azure Monitor, Stackdriver)
 - Other services based on tech stack
-
 Record schema:
 {
   "month": "2025-01",
@@ -54,22 +55,26 @@ Record schema:
   "cost_inr": <number>,
   "desc": "Resource description"
 }
-
 Rules:
-1. Total cost should be close to but not exceed budget by more than 30%
-2. Distribute costs realistically across services
-3. Use realistic resource IDs and regions (ap-south-1 for India)
-4. Include various usage types (on-demand, reserved, spot)
-5. Ensure costs reflect actual cloud pricing patterns
-6. Return pure JSON array only"""
+Rules:
+1. Prioritize realistic cloud costs based on the project’s tech stack and expected usage.
+2. Do NOT artificially reduce costs just to fit within the given budget.
+3. If the budget is realistic, generate costs that are reasonably realistic .
+4. If the budget is unrealistically low, generate minimum feasible cloud costs and allow
+   the total cost to exceed the budget.
+5. Distribute costs realistically across compute, database, storage, networking, and monitoring.
+6. Ensure high-usage or critical services (e.g., compute, database) contribute the largest share.
+7. Use realistic regions and identifiers (e.g., ap-south-1, valid resource IDs).
+8. Include multiple usage types such as on-demand, reserved, and spot where applicable.
+9. Ensure costs follow real-world cloud pricing patterns and trade-offs.
+10. Return ONLY a valid JSON array with no extra text.
+"""
 
         user_prompt = f"""Generate billing records for this project:
-
 Name: {profile['name']}
 Budget: ₹{profile['budget_inr_per_month']} per month
 Tech Stack: {json.dumps(profile['tech_stack'], indent=2)}
 Requirements: {', '.join(profile['non_functional_requirements'])}
-
 Generate 12-20 realistic billing records."""
 
         print("🔍 Generating synthetic billing data...")
