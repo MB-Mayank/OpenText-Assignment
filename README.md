@@ -4,7 +4,7 @@
 
 Give a plain-English project description, let the tool generate a structured profile and synthetic billing, then get a full cost-optimization report (JSON, text, and a rich HTML dashboard-style report) in one flow.
 
-> Note: The HTML report template was initially scaffolded with help from Claude, and GPT-based tools were used for debugging and improving comments/documentation. The core application logic and flow are self-built based on the given project requirements.
+> Note: The HTML report template was initially scaffolded with help from Claude, and GPT-based tools were used for debugging. The core application logic and flow are self-built based on the given project requirements.
 
 ## 🎯 Features
 
