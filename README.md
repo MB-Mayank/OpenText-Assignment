@@ -55,7 +55,7 @@ cloud-cost-optimizer/
 1. **Clone the repository**
 ```bash
 git clone <repository-url>
-cd cloud-cost-optimizer
+cd OpenText-Assignment
 ```
 
 2. **Install dependencies**
