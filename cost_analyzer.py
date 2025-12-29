@@ -1,23 +1,10 @@
-"""
-Cost Analyzer
-Analyzes billing data and generates optimization recommendations using LLM
-"""
-
 import json
 from typing import Dict, Any, List
 from llm_client import LLMClient
 
 
 class CostAnalyzer:
-    """Analyzes costs and generates optimization recommendations"""
-    
     def __init__(self, llm_client: LLMClient):
-        """
-        Initialize cost analyzer
-        
-        Args:
-            llm_client: LLM client instance for API calls
-        """
         self.llm = llm_client
         
     def analyze_and_recommend(
@@ -25,17 +12,6 @@ class CostAnalyzer:
         profile: Dict[Any, Any], 
         billing: List[Dict[Any, Any]]
     ) -> Dict[Any, Any]:
-        """
-        Analyze costs and generate optimization recommendations
-        
-        Args:
-            profile: Project profile dictionary
-            billing: List of billing record dictionaries
-            
-        Returns:
-            Cost optimization report dictionary
-        """
-        # Calculate basic metrics
         total_cost = sum(r["cost_inr"] for r in billing)
         budget = profile["budget_inr_per_month"]
         
@@ -44,7 +20,6 @@ class CostAnalyzer:
             service = record["service"]
             service_costs[service] = service_costs.get(service, 0) + record["cost_inr"]
         
-        # Find high-cost services (top 3)
         sorted_services = sorted(service_costs.items(), key=lambda x: x[1], reverse=True)
         high_cost_services = dict(sorted_services[:3])
         
@@ -115,48 +90,23 @@ High Cost Services:
 
 Generate 6-10 optimization recommendations with multi-cloud alternatives."""
 
-        print("🔍 Analyzing costs and generating recommendations...")
+        print("Analyzing costs and generating recommendations...")
         report = self.llm.generate_json(system_prompt, user_prompt, temperature=0.8)
-        print(f"✅ Generated {len(report.get('recommendations', []))} recommendations")
+        print(f"Generated {len(report.get('recommendations', []))} recommendations")
         
         return report
     
     def save_report(self, report: Dict[Any, Any], output_path: str = "outputs/cost_optimization_report.json"):
-        """
-        Save optimization report to JSON file
-        
-        Args:
-            report: Cost optimization report dictionary
-            output_path: Path to save JSON file
-        """
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        print(f"💾 Report saved to {output_path}")
+        print(f"Report saved to {output_path}")
     
     def load_report(self, input_path: str = "outputs/cost_optimization_report.json") -> Dict[Any, Any]:
-        """
-        Load optimization report from JSON file
-        
-        Args:
-            input_path: Path to JSON file
-            
-        Returns:
-            Cost optimization report dictionary
-        """
         with open(input_path, 'r', encoding='utf-8') as f:
             report = json.load(f)
         return report
     
     def validate_report(self, report: Dict[Any, Any]) -> bool:
-        """
-        Validate report structure
-        
-        Args:
-            report: Cost optimization report dictionary
-            
-        Returns:
-            True if valid, raises ValueError otherwise
-        """
         required_sections = ["project_name", "analysis", "recommendations", "summary"]
         
         for section in required_sections:
@@ -167,35 +117,29 @@ Generate 6-10 optimization recommendations with multi-cloud alternatives."""
             raise ValueError("recommendations must be an array")
         
         if len(report["recommendations"]) < 6:
-            print(f"⚠️  Warning: Expected 6-10 recommendations, got {len(report['recommendations'])}")
+            print(f"Warning: Expected 6-10 recommendations, got {len(report['recommendations'])}")
         
-        print("✅ Report validation passed")
+        print("Report validation passed")
         return True
     
     def print_summary(self, report: Dict[Any, Any]):
-        """
-        Print formatted report summary
-        
-        Args:
-            report: Cost optimization report dictionary
-        """
         print("\n" + "="*60)
-        print(f"📊 COST OPTIMIZATION REPORT: {report['project_name']}")
+        print(f"COST OPTIMIZATION REPORT: {report['project_name']}")
         print("="*60)
         
         analysis = report["analysis"]
-        print(f"\n💰 COST ANALYSIS:")
+        print(f"\nCOST ANALYSIS:")
         print(f"   Total Monthly Cost: ₹{analysis['total_monthly_cost']:,.2f}")
         print(f"   Budget: ₹{analysis['budget']:,.2f}")
         print(f"   Variance: ₹{analysis['budget_variance']:,.2f}")
-        print(f"   Status: {'⚠️  OVER BUDGET' if analysis['is_over_budget'] else '✅ WITHIN BUDGET'}")
+        print(f"   Status: {'OVER BUDGET' if analysis['is_over_budget'] else 'WITHIN BUDGET'}")
         
-        print(f"\n📈 TOP SERVICES BY COST:")
+        print(f"\nTOP SERVICES BY COST:")
         for service, cost in list(analysis['high_cost_services'].items())[:5]:
             print(f"   • {service}: ₹{cost:,.2f}")
         
         summary = report["summary"]
-        print(f"\n💡 RECOMMENDATIONS SUMMARY:")
+        print(f"\nRECOMMENDATIONS SUMMARY:")
         print(f"   Total Recommendations: {summary['recommendations_count']}")
         print(f"   High Impact: {summary.get('high_impact_recommendations', 0)}")
         print(f"   Potential Savings: ₹{summary['total_potential_savings']:,.2f}")
@@ -204,15 +148,8 @@ Generate 6-10 optimization recommendations with multi-cloud alternatives."""
         print("\n" + "="*60 + "\n")
     
     def print_recommendations(self, report: Dict[Any, Any], detailed: bool = False):
-        """
-        Print formatted recommendations
-        
-        Args:
-            report: Cost optimization report dictionary
-            detailed: If True, print full details including steps
-        """
         print("\n" + "="*60)
-        print("💡 COST OPTIMIZATION RECOMMENDATIONS")
+        print("COST OPTIMIZATION RECOMMENDATIONS")
         print("="*60 + "\n")
         
         for i, rec in enumerate(report["recommendations"], 1):

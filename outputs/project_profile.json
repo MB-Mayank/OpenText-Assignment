@@ -1,21 +1,21 @@
 {
-  "name": "Healthcare Analytics Platform",
+  "name": "E-commerce App",
   "budget_inr_per_month": 5000,
-  "description": "A healthcare analytics platform to analyze patient admission trends and resource utilization for hospitals.",
+  "description": "E-commerce app with React frontend and Node.js backend",
   "tech_stack": {
     "frontend": "React",
-    "backend": "Python and FastAPI",
-    "database": "PostgreSQL",
+    "backend": "Node.js",
+    "database": "MongoDB",
     "proxy": null,
-    "hosting": "AWS",
+    "hosting": null,
     "storage": null,
     "monitoring": null,
     "analytics": null,
     "other": []
   },
   "non_functional_requirements": [
-    "security",
     "scalability",
-    "high availability"
+    "reliability",
+    "cost efficiency"
   ]
 }
